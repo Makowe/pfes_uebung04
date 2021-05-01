@@ -35,7 +35,7 @@ private:
 };
 
 constexpr char* DigitFormatter::printRow(char *dst, int digit, int row) {
-    if(dst == nullptr) return nullptr;
+    if(dst == nullptr || digit < 0 || digit >= 10 || row < 0 || row >= 5) return dst;
 
     for(int col = 0; col < 3; col++) {
         int segmentNumber = _formation[row][col];
@@ -43,6 +43,7 @@ constexpr char* DigitFormatter::printRow(char *dst, int digit, int row) {
         else { *dst = _symbol[digit][segmentNumber]; }
         ++dst;
     }
+    *dst = '\0';
     return dst;
 }
 
