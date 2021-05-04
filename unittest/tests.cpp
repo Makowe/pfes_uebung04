@@ -5,14 +5,19 @@
 
 
 TEST_CASE( "format rows", "DigitFormatter" ) {
-    SECTION("print Rows") {
+    SECTION("print Single Digit Row") {
         char dst[4] = "";
-        DigitFormatter::printRow(dst, 5, 0);
+        DigitFormatter::printDigitRow(dst, 5, 0);
         REQUIRE(strcmp(dst, " - ") == 0);
-        DigitFormatter::printRow(dst, 8, 1);
+        DigitFormatter::printDigitRow(dst, 8, 1);
         REQUIRE(strcmp(dst, "| |") == 0);
-        DigitFormatter::printRow(dst, 4, 4);
+        DigitFormatter::printDigitRow(dst, 4, 4);
         REQUIRE(strcmp(dst, "   ") == 0);
+    }
+    SECTION("print Whole Row") {
+        char dst[13] = "";
+        DigitFormatter::printWholeRow(dst, 0, 0,1,2);
+        REQUIRE(strcmp(dst, " -       - \n") == 0);
     }
 }
 

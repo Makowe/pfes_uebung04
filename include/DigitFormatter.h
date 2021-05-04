@@ -8,7 +8,49 @@
 
 class DigitFormatter {
 public:
-    static constexpr char* printRow(char* dst, int digit, int row);
+
+    template <typename  T, typename... Args>
+    static constexpr char* printWholeRow(char* dst, int row, T first, Args... args) {
+        dst = DigitFormatter::printDigitRow(dst, first, row);
+
+        int size = sizeof...(Args);
+        if(sizeof...(Args) > 0) {
+
+            *dst = ' ';
+            ++dst;
+            dst = printWholeRow(dst, row, args...);
+        }
+        else {
+            *dst = '\n';
+            ++dst;
+        }
+        return dst;
+    }
+
+    static constexpr char* printWholeRow(char* dst, int) { return dst; }
+
+    static constexpr char* printDigitRow(char* dst, int digit, int row) {
+        if(dst == nullptr || row < 0 || row >= 5) return dst;
+        if(digit > 9 || digit < 0) { digit = fallback_number(); }
+
+        for(int col = 0; col < 3; col++) {
+            int segmentNumber = _formation[row][col];
+            if(segmentNumber == -1) { *dst = ' '; }
+            else { *dst = _symbol[digit][segmentNumber]; }
+            ++dst;
+        }
+        *dst = '\0';
+        return dst;
+    }
+
+    // function returns an alternative number and gets called if the digit is <0 or >9.
+    // The function is intentionally not constexpr so the compiler throws an Error when
+    // MultiDigit is initialized constexpr with illegal numbers.
+    // e.g. constexpr MultiDigit a{1,2,14} -> Compile-Time Error
+    //                MultiDigit b{1,2,14} -> use fallback_number to prevent segmentation fault
+    static int fallback_number() {
+        return 0;
+    }
 
 private:
     // holds the symbol that should be printed for a given digit and a given segment index.
@@ -33,18 +75,5 @@ private:
             {-1,  6, -1}
     };
 };
-
-constexpr char* DigitFormatter::printRow(char *dst, int digit, int row) {
-    if(dst == nullptr || digit < 0 || digit >= 10 || row < 0 || row >= 5) return dst;
-
-    for(int col = 0; col < 3; col++) {
-        int segmentNumber = _formation[row][col];
-        if(segmentNumber == -1) { *dst = ' '; }
-        else { *dst = _symbol[digit][segmentNumber]; }
-        ++dst;
-    }
-    *dst = '\0';
-    return dst;
-}
 
 #endif //UEBUNG04_DIGITFORMATTER_H
