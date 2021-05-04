@@ -13,7 +13,6 @@ public:
     static constexpr char* printWholeRow(char* dst, int row, T first, Args... args) {
         dst = DigitFormatter::printDigitRow(dst, first, row);
 
-        int size = sizeof...(Args);
         if(sizeof...(Args) > 0) {
 
             *dst = ' ';
@@ -43,7 +42,7 @@ public:
         return dst;
     }
 
-    // function returns an alternative number and gets called if the digit is <0 or >9.
+    // function gets called when if the digit is <0 or >9. It returns an alternative digit to print.
     // The function is intentionally not constexpr so the compiler throws an Error when
     // MultiDigit is initialized constexpr with illegal numbers.
     // e.g. constexpr MultiDigit a{1,2,14} -> Compile-Time Error
